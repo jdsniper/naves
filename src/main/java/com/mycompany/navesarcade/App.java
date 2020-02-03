@@ -26,10 +26,11 @@ public class App extends Application {
     final short SCENE_WIDTH=640 ;
     short navePosX = (short)((SCENE_WIDTH)/2);
     short navePosY=420; 
-    short balaPosX = (short)((SCENE_WIDTH)/2);
-    short balaPosY=navePosY; 
-    byte naveDirection = 0;
-    byte balaDirection = 0;
+    short balaPosX = (short)((27 + SCENE_WIDTH)/2);
+    short balaPosY= 415; 
+    short naveDirection = 0;
+    short balaDirectionX = 0;
+    byte balaDirectionY = 0;
     
     @Override
     public void start(Stage stage) {
@@ -48,7 +49,14 @@ public class App extends Application {
         Image fondo = new Image(getClass().getResourceAsStream("/imagenes/fondo.jpg"));
         ImageView imageViewFondo = new ImageView(fondo);
         root.getChildren().add(imageViewFondo);
-
+        
+//tomar posicion inicial del grupo
+        Circle bala = new Circle ();
+        bala.setCenterX(0);
+        bala.setCenterY(0);
+        bala.setRadius(2.5);
+        bala.setFill(Color.YELLOWGREEN);
+        root.getChildren().add(bala);
         //nave x y L A
         
         //tomar posicion inicial del grupo
@@ -59,21 +67,15 @@ public class App extends Application {
         naveBase.setFill(Color.WHITE);
         naveCentral.setFill(Color.WHITE);
         naveCabina.setFill(Color.WHITE);
-                    //grupo nave
+        //grupo nave
         Group nave = new Group();
         nave.getChildren().add(naveBase);
         nave.getChildren().add(naveCentral);
         nave.getChildren().add(naveCabina);
         //mostrar el grupo de la nave
         root.getChildren().add(nave);
-        //Disparo de la nave
-        //tomar posicion inicial del grupo
-        Circle bala = new Circle ();
-        bala.setCenterX(0);
-        bala.setCenterY(0);
-        bala.setRadius(2.5);
-        bala.setFill(Color.YELLOWGREEN);
-        root.getChildren().add(bala);
+
+       
         
 
 //posicion inicial de la bala temporal
@@ -85,21 +87,26 @@ public class App extends Application {
                 switch(keyEvent.getCode()) {
                     case RIGHT:
                         naveDirection = 1;
+
                         break;
                     case LEFT:
                         naveDirection = -1;
+
                         break;
                     //disparo de la bala
                     case SPACE:
-                        balaDirection = -1;
+                        balaDirectionY = -1;
+                        balaDirectionX = navePosX;
                         break;
+                        // hacer q en el momento del disparo la bala tenga la posicion de la nave
                 }
-                System.out.println(balaDirection);
+//                System.out.println(balaDirection);
             }
         });
         //para que lo sume de uno en uno y no seguido
         scene.setOnKeyReleased((KeyEvent keyEvent) -> {
         naveDirection = 0;
+        balaDirectionX = 0;
         });
         
         
@@ -122,30 +129,46 @@ public class App extends Application {
                         navePosX = (short)(SCENE_WIDTH);
                     }
                     // Animacion de la bala
-                    balaPosY += balaSpeed * balaDirection;
+                    balaPosY += balaSpeed * balaDirectionY;
                     if(balaPosY <= 0 || balaPosY >= SCENE_HEIGHT) {
-                        balaDirection = 0;
+                        balaDirectionY = 0;
                     }
                     if(balaPosY <= 0) {
-                        balaDirection = 0;
+                        balaDirectionY = 0;
                         balaPosY = 0;
                     } else if (balaPosY >= SCENE_HEIGHT) {
-                        balaDirection = 0;
+                        balaDirectionY = 0;
                         balaPosY = (short)(SCENE_HEIGHT);
                     }
                    // System.out.println(navePosX);
-        
+//////                   //posicion bala X
+//////                    balaPosX += balaSpeed * balaDirectionX;
+//////                    if(balaPosX <= 0 || balaPosX >= SCENE_WIDTH) {
+//////                        balaDirectionX = 0;
+//////                    }
+//////                    if(balaPosX <= 0) {
+//////                        balaDirectionX = 0;
+//////                        balaPosX = 0;
+//////                    } else if (balaPosX >= SCENE_WIDTH) {
+//////                        balaDirectionX = 0;
+//////                        balaPosX = (short)(SCENE_WIDTH);
+//////                    }
                     //MOVIMIENTO DE LA NAVE 
                     nave.setTranslateX(navePosX);
                     nave.setTranslateY(navePosY);
                     //Poicion de la bala antes de ser disparada
-                    bala.setTranslateX(navePosX);
+//                    bala.setTranslateX(balaPosX);
+                    bala.setTranslateY(balaPosY);
                     
+                     System.out.println(balaPosY);
                     //Poicion de la bala cuando es disparada debo hacer q se mueba de forma independiante a la nave
                     
                    if(balaPosY <= 0){
-                    balaPosY  =  navePosY;
+                    balaPosY  =  420;
                    }
+//                    if(balaPosY <=420 ){
+//                    balaPosX  =  ;
+//                   }
                 }
                 
             })
