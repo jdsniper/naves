@@ -28,6 +28,10 @@ public class App extends Application {
     short navePosY=420; 
     short naveDirection = 0;
     
+    short naveEnemigaPosX =0;
+    short naveEnemigaPosY=0; 
+    short naveDirectionEnemiga = 1;
+    
     short balaPosX = -10;
     short balaPosY= -10; 
     short balaDirectionY = 0;
@@ -50,11 +54,10 @@ public class App extends Application {
         ImageView imageViewFondo = new ImageView(fondo);
         root.getChildren().add(imageViewFondo);
         //nave enemiga
-        Image naveEnemiga = new Image(getClass().getResourceAsStream("/imagenes/naveEnemiga.jpg"));
+        Image naveEnemiga = new Image(getClass().getResourceAsStream("/imagenes/naveEnemiga.png"));
         ImageView imageViewNaveEnemiga = new ImageView(naveEnemiga);
         root.getChildren().add(imageViewNaveEnemiga);
         
-
         //nave x y L A
         
         //tomar posicion inicial del grupo
@@ -101,6 +104,7 @@ System.out.println("navePosY = " + navePosY);
                     case SPACE:
                         balaDirectionY = -1;
                         balaPosX =  (short) (navePosX + 13);
+                        balaPosY = navePosY ;
                         break;
                         // hacer q en el momento del disparo la bala tenga la posicion de la nave
                 }
@@ -145,17 +149,39 @@ System.out.println("navePosY = " + navePosY);
                         balaPosY = (short)(SCENE_HEIGHT);
                     }
                     
+                    // ANIMACIÓN DE LA NAVE ENEMIGA
+                    //nave.setLayoutY(navePosX);
+                    naveEnemigaPosX += naveSpeed * naveDirectionEnemiga;
+                    if(naveEnemigaPosX <= 0 || naveEnemigaPosX >= SCENE_WIDTH) {
+                        naveDirectionEnemiga = 0;
+                    }
+                    if(naveEnemigaPosX <= 0) {
+                        naveDirectionEnemiga = 0;
+                        naveEnemigaPosX = 0;
+                    } else if (naveEnemigaPosX >= SCENE_WIDTH) {
+                        naveDirectionEnemiga = 0;
+                        naveEnemigaPosX = (short)(SCENE_WIDTH);
+                    }
+                    
                     //MOVIMIENTO DE LA NAVE 
                     nave.setTranslateX(navePosX);
                     nave.setTranslateY(navePosY);
+                    
+                    //MOVIMIENTO DE LA NAVE ENEMIGA
+
+                    imageViewNaveEnemiga.setLayoutX(naveEnemigaPosX);
+//                    imageViewNaveEnemiga.setLayoutY(naveEnemigaPosY);
+                    
                     //Poicion de la bala antes de ser disparada
                     bala.setTranslateY(balaPosY);
                     bala.setTranslateX(balaPosX);
+                    
+                   
 
                     //Poicion de la bala cuando es disparada debo hacer q se mueba de forma independiante a la nave
                     
                    if(balaPosY <= 0){
-                    balaPosY  =  420;
+                    balaPosY  = 500;
                    }
                    
 //                    if(balaPosY <=420 ){
