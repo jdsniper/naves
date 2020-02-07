@@ -14,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -34,7 +35,7 @@ public class App extends Application {
     
     short balaPosX = -10;
     short balaPosY= -10; 
-    short balaDirectionY = 0;
+    short balaDirectionY = 0;       
     
     @Override
     public void start(Stage stage) {
@@ -47,16 +48,14 @@ public class App extends Application {
         
           short stickPosY = (short)((SCENE_HEIGHT)/2);
           byte naveSpeed = 4;
+          byte naveSpeedEnemiga = 2;
           byte balaSpeed = 4;
           
         //fondo
         Image fondo = new Image(getClass().getResourceAsStream("/imagenes/fondo.jpg"));
         ImageView imageViewFondo = new ImageView(fondo);
         root.getChildren().add(imageViewFondo);
-        //nave enemiga
-        Image naveEnemiga = new Image(getClass().getResourceAsStream("/imagenes/naveEnemiga.png"));
-        ImageView imageViewNaveEnemiga = new ImageView(naveEnemiga);
-        root.getChildren().add(imageViewNaveEnemiga);
+       
         
         //nave x y L A
         
@@ -83,8 +82,20 @@ public class App extends Application {
         bala.setRadius(2.5);
         bala.setFill(Color.YELLOWGREEN);
         root.getChildren().add(bala);
+        //grupo nave enemiga
+        Rectangle naveEnemigaF = new Rectangle(0,0,45,35);
+        naveEnemigaF.setFill(Color.TRANSPARENT);
         
-System.out.println("navePosY = " + navePosY);
+        //nave enemiga Imagen
+        Image naveEnemiga = new Image(getClass().getResourceAsStream("/imagenes/naveEnemiga.png"));
+        ImageView imageViewNaveEnemiga = new ImageView(naveEnemiga);
+        root.getChildren().add(imageViewNaveEnemiga);
+        
+        Group enemigo = new Group();
+        enemigo.getChildren().add(naveEnemigaF);
+        enemigo.getChildren().add(imageViewNaveEnemiga);
+        root.getChildren().add(enemigo);
+
 //posicion inicial de la bala temporal
         
         
@@ -151,7 +162,7 @@ System.out.println("navePosY = " + navePosY);
                     
                     // ANIMACIÓN DE LA NAVE ENEMIGA
                     //nave.setLayoutY(navePosX);
-                    naveEnemigaPosX += naveSpeed * naveDirectionEnemiga;
+                    naveEnemigaPosX += naveSpeedEnemiga * naveDirectionEnemiga;
                     if(naveEnemigaPosX <= 0 || naveEnemigaPosX >= SCENE_WIDTH) {
                         naveDirectionEnemiga = 0;
                     }
@@ -163,30 +174,40 @@ System.out.println("navePosY = " + navePosY);
                         naveEnemigaPosX = (short)(SCENE_WIDTH);
                     }
                     
-                    //MOVIMIENTO DE LA NAVE 
-                    nave.setTranslateX(navePosX);
-                    nave.setTranslateY(navePosY);
+                //MOVIMIENTO DE LA NAVE 
+                nave.setTranslateX(navePosX);
+                nave.setTranslateY(navePosY);
                     
-                    //MOVIMIENTO DE LA NAVE ENEMIGA
-
-                    imageViewNaveEnemiga.setLayoutX(naveEnemigaPosX);
-//                    imageViewNaveEnemiga.setLayoutY(naveEnemigaPosY);
+                //MOVIMIENTO DE LA NAVE ENEMIGA
+                enemigo.setTranslateX(naveEnemigaPosX);
+                enemigo.setTranslateY(naveEnemigaPosY);
                     
-                    //Poicion de la bala antes de ser disparada
+                //Poicion de la bala antes de ser disparada
                     bala.setTranslateY(balaPosY);
                     bala.setTranslateX(balaPosX);
-                    
-                   
-
-                    //Poicion de la bala cuando es disparada debo hacer q se mueba de forma independiante a la nave
-                    
+                //Poicion de la bala cuando es disparada debo hacer q se mueba de forma independiante a la nave
                    if(balaPosY <= 0){
                     balaPosY  = 500;
                    }
-                   
-//                    if(balaPosY <=420 ){
-//                    balaPosX  =  ;
-//                   }
+                //movimiento de la nave eneemiga por pantalla
+                 if(naveEnemigaPosX >= 640){
+                    naveEnemigaPosX = 0;
+                    naveDirectionEnemiga = 1;
+                    naveEnemigaPosY = (short) (naveEnemigaPosY + 30);
+                   }
+                
+               Shape.intersect(naveEnemigaF,bala );
+        
+               Shape shapeColision = Shape.intersect(naveEnemigaF, bala);
+         
+               boolean colisionVacia = shapeColision.getBoundsInLocal().isEmpty();
+
+                if(colisionVacia == false ){
+                naveEnemigaPosX = -20;
+                naveEnemigaPosY = -20;
+                naveDirectionEnemiga = 0;
+                }
+
                 }
                 
             })
