@@ -5,16 +5,19 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -37,6 +40,9 @@ public class App extends Application {
     short balaPosY= -10; 
     short balaDirectionY = 0;       
     
+    short vidasEnemigo = 30;       
+    short vidasNave = 1;
+    
     @Override
     public void start(Stage stage) {
         //pantalla
@@ -48,7 +54,7 @@ public class App extends Application {
         
           short stickPosY = (short)((SCENE_HEIGHT)/2);
           byte naveSpeed = 4;
-          byte naveSpeedEnemiga = 2;
+          byte naveSpeedEnemiga = 1;
           byte balaSpeed = 4;
           
         //fondo
@@ -82,9 +88,10 @@ public class App extends Application {
         bala.setRadius(2.5);
         bala.setFill(Color.YELLOWGREEN);
         root.getChildren().add(bala);
-        //grupo nave enemiga
+        //Desaparicion nave enemiga
         Rectangle naveEnemigaF = new Rectangle(0,0,45,35);
         naveEnemigaF.setFill(Color.TRANSPARENT);
+        //grupo nave enemiga
         
         //nave enemiga Imagen
         Image naveEnemiga = new Image(getClass().getResourceAsStream("/imagenes/naveEnemiga.png"));
@@ -95,10 +102,34 @@ public class App extends Application {
         enemigo.getChildren().add(naveEnemigaF);
         enemigo.getChildren().add(imageViewNaveEnemiga);
         root.getChildren().add(enemigo);
-
+        
+//        Rectangle naveEnemigaI = new Rectangle(0,0,45,35);
+//        naveEnemigaI.setFill(Color.BLACK);
+//        root.getChildren().add(naveEnemigaI);
 //posicion inicial de la bala temporal
         
+// puntiacion del juego
+        // panel principal
+        HBox paneScores = new HBox();
+        paneScores.setTranslateY(20);
+        paneScores.setMinWidth(SCENE_WIDTH);
+        paneScores.setAlignment(Pos.CENTER);
+        paneScores.setSpacing(100);
+        root.getChildren().add(paneScores);
         
+        // layout vidas nave enemiga
+        HBox paneCurrentScoreE = new HBox();
+        paneCurrentScoreE.setSpacing(10);
+        paneScores.getChildren().add(paneCurrentScoreE);
+         // layout vidas nave 
+        HBox paneCurrentScore = new HBox();
+        paneCurrentScore.setSpacing(10);
+        paneScores.getChildren().add(paneCurrentScore);
+        
+        // etiquetas para vidas
+        Text textTitleScore = new Text("vidas nave enemiga:");
+
+
         // CONTROL DEL TECLADO
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             public void handle(final KeyEvent keyEvent) {
@@ -201,15 +232,19 @@ public class App extends Application {
                Shape shapeColision = Shape.intersect(naveEnemigaF, bala);
          
                boolean colisionVacia = shapeColision.getBoundsInLocal().isEmpty();
-
-                if(colisionVacia == false ){
-                naveEnemigaPosX = -20;
-                naveEnemigaPosY = -20;
-                naveDirectionEnemiga = 0;
-                }
-
-                }
+               
                 
+                    if(colisionVacia == false ){
+                    vidasEnemigo = (short) (vidasEnemigo -1);
+                    }
+                    System.out.print(vidasEnemigo);
+                    
+                    if(vidasEnemigo == 0){
+                    naveEnemigaPosX = -20;
+                    naveEnemigaPosY = -20;
+                    naveDirectionEnemiga = 0;
+                    }
+                }
             })
             
         );
