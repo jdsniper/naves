@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -33,7 +34,7 @@ public class App extends Application {
     short naveDirection = 0;
     
     short naveEnemigaPosX =0;
-    short naveEnemigaPosY=0; 
+    short naveEnemigaPosY=55; 
     short naveDirectionEnemiga = 1;
     
     short balaPosX = -10;
@@ -43,6 +44,8 @@ public class App extends Application {
     short vidasEnemigo = 30;       
     short vidasNave = 1;
     
+    final short TEXT_SIZE = 24;
+    Text textScore;
     @Override
     public void start(Stage stage) {
         //pantalla
@@ -103,32 +106,37 @@ public class App extends Application {
         enemigo.getChildren().add(imageViewNaveEnemiga);
         root.getChildren().add(enemigo);
         
-//        Rectangle naveEnemigaI = new Rectangle(0,0,45,35);
-//        naveEnemigaI.setFill(Color.BLACK);
-//        root.getChildren().add(naveEnemigaI);
-//posicion inicial de la bala temporal
+        Rectangle naveEnemigaI = new Rectangle(0,0,45,35);
+        naveEnemigaI.setFill(Color.BLACK);
+        root.getChildren().add(naveEnemigaI);
+
         
 // puntiacion del juego
-        // panel principal
-        HBox paneScores = new HBox();
-        paneScores.setTranslateY(20);
-        paneScores.setMinWidth(SCENE_WIDTH);
-        paneScores.setAlignment(Pos.CENTER);
-        paneScores.setSpacing(100);
-        root.getChildren().add(paneScores);
         
-        // layout vidas nave enemiga
-        HBox paneCurrentScoreE = new HBox();
-        paneCurrentScoreE.setSpacing(10);
-        paneScores.getChildren().add(paneCurrentScoreE);
-         // layout vidas nave 
-        HBox paneCurrentScore = new HBox();
-        paneCurrentScore.setSpacing(10);
-        paneScores.getChildren().add(paneCurrentScore);
-        
-        // etiquetas para vidas
-        Text textTitleScore = new Text("vidas nave enemiga:");
-
+          // Panel para mostrar textos (puntuaciones)
+        HBox paneTextScore = new HBox();
+        paneTextScore.setTranslateY(20);
+        paneTextScore.setMinWidth(SCENE_WIDTH);
+        paneTextScore.setAlignment(Pos.CENTER);
+        root.getChildren().add(paneTextScore);
+        // Texto de etiqueta para la puntuación
+        Text textTitleScore = new Text("Vida: ");
+        textTitleScore.setFont(Font.font(TEXT_SIZE));
+        textTitleScore.setFill(Color.WHITE);
+        // Texto para la puntuación
+        textScore = new Text("0");
+        textScore.setFont(Font.font(TEXT_SIZE));
+        textScore.setFill(Color.WHITE);
+        paneTextScore.getChildren().add(textTitleScore);
+        paneTextScore.getChildren().add(textScore);
+//        // Texto de etiqueta para la puntuación máxima
+//        Text textTitleMaxScore = new Text("          Max.Score: ");
+//        textTitleMaxScore.setFont(Font.font(TEXT_SIZE));
+//        textTitleMaxScore.setFill(Color.WHITE);
+//        // Texto para la puntuación máxima
+//        textHighScore = new Text("0");
+//        textHighScore.setFont(Font.font(TEXT_SIZE));
+//        textHighScore.setFill(Color.WHITE);
 
         // CONTROL DEL TECLADO
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -164,7 +172,8 @@ public class App extends Application {
             // 0.017 ~= 60 FPS
             new KeyFrame(Duration.seconds(0.017), new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent ae) {
-
+                    textScore.setText(String.valueOf(vidasEnemigo));
+                    
                     // ANIMACIÓN DE LA NAVE
                     //nave.setLayoutY(navePosX);
                     navePosX += naveSpeed * naveDirection;
@@ -239,12 +248,15 @@ public class App extends Application {
                     }
                     System.out.print(vidasEnemigo);
                     
+                    // hacer que tenga mas velocidad al tener menor vida
+                    
                     if(vidasEnemigo == 0){
                     naveEnemigaPosX = -20;
                     naveEnemigaPosY = -20;
                     naveDirectionEnemiga = 0;
                     }
                 }
+                
             })
             
         );
