@@ -1,5 +1,7 @@
 package com.mycompany.navesarcade;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -46,6 +48,7 @@ public class App extends Application {
     
     final short TEXT_SIZE = 24;
     Text textScore;
+     byte naveSpeedEnemiga = 10;
     @Override
     public void start(Stage stage) {
         //pantalla
@@ -57,7 +60,7 @@ public class App extends Application {
         
           short stickPosY = (short)((SCENE_HEIGHT)/2);
           byte naveSpeed = 4;
-          byte naveSpeedEnemiga = 1;
+         
           byte balaSpeed = 4;
           
         //fondo
@@ -129,15 +132,39 @@ public class App extends Application {
         textScore.setFill(Color.WHITE);
         paneTextScore.getChildren().add(textTitleScore);
         paneTextScore.getChildren().add(textScore);
-//        // Texto de etiqueta para la puntuación máxima
-//        Text textTitleMaxScore = new Text("          Max.Score: ");
-//        textTitleMaxScore.setFont(Font.font(TEXT_SIZE));
-//        textTitleMaxScore.setFill(Color.WHITE);
-//        // Texto para la puntuación máxima
-//        textHighScore = new Text("0");
-//        textHighScore.setFont(Font.font(TEXT_SIZE));
-//        textHighScore.setFill(Color.WHITE);
+        
+//        texto para fin de partida si has ganado
+        HBox paneTextGanado = new HBox();
+        paneTextGanado.setTranslateY(240);
+        paneTextGanado.setMinWidth(SCENE_WIDTH);
+        paneTextGanado.setAlignment(Pos.CENTER);
+        root.getChildren().add(paneTextGanado);
+        // Texto de etiqueta para la puntuación
+        Text textTitleGanado = new Text("Has Ganado");
+        textTitleGanado.setFont(Font.font(TEXT_SIZE));
+        textTitleGanado.setFill(Color.WHITE);
 
+//        texto para fin de partida si has perdido
+        HBox paneTextPerdido = new HBox();
+        paneTextPerdido.setTranslateY(210);
+        paneTextPerdido.setMinWidth(SCENE_WIDTH);
+        paneTextPerdido.setAlignment(Pos.CENTER);
+        root.getChildren().add(paneTextPerdido);
+        // Texto de etiqueta para la puntuación
+        Text textTitlePerdido = new Text("Has Perdido");
+        textTitlePerdido.setFont(Font.font(TEXT_SIZE));
+        textTitlePerdido.setFill(Color.WHITE);
+        //intentarlo de nuevo
+        HBox paneTextPerdidoR = new HBox();
+        paneTextPerdidoR.setTranslateY(260);
+        paneTextPerdidoR.setMinWidth(SCENE_WIDTH);
+        paneTextPerdidoR.setAlignment(Pos.CENTER);
+        root.getChildren().add(paneTextPerdidoR);
+        // Texto de etiqueta para la puntuación
+        Text textTitlePerdidoR = new Text("Intentalo de nuevo:");
+        textTitlePerdidoR.setFont(Font.font(TEXT_SIZE));
+        textTitlePerdidoR.setFill(Color.WHITE);
+        
         // CONTROL DEL TECLADO
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             public void handle(final KeyEvent keyEvent) {
@@ -166,6 +193,24 @@ public class App extends Application {
         naveDirection = 0;
 //        balaDirectionY = 0;
         });
+        
+        
+         // Texto para la puntuación
+//        tiempo = new Text("0");
+//        tiempo.setFont(Font.font(TEXT_SIZE));
+//        tiempo.setFill(Color.WHITE);
+//        textTitlePerdidoR.getChildren().add(tiempo);
+         // tiempo para iniciar otra partida
+     TimerTask timerTask = new TimerTask()
+     {
+         public void run() 
+         {
+             // Aquí el código que queremos ejecutar.
+         }
+     };
+     Timer timer = new Timer();
+     timer.scheduleAtFixedRate(timerTask, 0, 1000);
+        
         
         
         Timeline timeline = new Timeline(
@@ -233,27 +278,51 @@ public class App extends Application {
                  if(naveEnemigaPosX >= 640){
                     naveEnemigaPosX = 0;
                     naveDirectionEnemiga = 1;
-                    naveEnemigaPosY = (short) (naveEnemigaPosY + 30);
+                    naveEnemigaPosY = (short) (naveEnemigaPosY + 35);
                    }
-                
-               Shape.intersect(naveEnemigaF,bala );
+
+                 // colision entre la bala y la nave enemiga 
+                Shape.intersect(naveEnemigaF,bala );
         
-               Shape shapeColision = Shape.intersect(naveEnemigaF, bala);
+                Shape shapeColision = Shape.intersect(naveEnemigaF, bala);
          
-               boolean colisionVacia = shapeColision.getBoundsInLocal().isEmpty();
+                boolean colisionVacia = shapeColision.getBoundsInLocal().isEmpty();
                
                 
                     if(colisionVacia == false ){
                     vidasEnemigo = (short) (vidasEnemigo -1);
                     }
-                    System.out.print(vidasEnemigo);
                     
                     // hacer que tenga mas velocidad al tener menor vida
-                    
+//                    
+//                    if(vidasEnemigo <= 20){
+//                        naveSpeedEnemiga = (byte) (naveSpeedEnemiga + 0);
+//                    }
+//                    if(vidasEnemigo >= 20){
+//                        naveSpeedEnemiga = (byte) (naveSpeedEnemiga + 1);
+//                    }
+                   
+                // la animacion se para por que has ganado la partida
                     if(vidasEnemigo == 0){
                     naveEnemigaPosX = -20;
                     naveEnemigaPosY = -20;
                     naveDirectionEnemiga = 0;
+                    naveEnemigaPosX = 0;
+                    naveDirection = 0;
+                    balaDirectionY = 0;
+                    paneTextGanado.getChildren().add(textTitleGanado);
+                    }
+                    
+//                 la animacion se para por que has perdido la partida
+                if(naveEnemigaPosY >= 420){
+                    naveEnemigaPosX = -20;
+                    naveEnemigaPosY = -20;
+                    naveDirectionEnemiga = 0;
+                    naveEnemigaPosX = 0;
+                    naveDirection = 0;
+                    balaDirectionY = 0;
+                    paneTextPerdido.getChildren().add(textTitlePerdido);
+                    paneTextPerdidoR.getChildren().add(textTitlePerdidoR);
                     }
                 }
                 
