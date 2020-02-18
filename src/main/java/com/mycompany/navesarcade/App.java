@@ -1,5 +1,6 @@
 package com.mycompany.navesarcade;
 
+import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.animation.KeyFrame;
@@ -23,7 +24,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+//import javafx.scene.media.Media;
+//import javafx.scene.media.MediaPlayer;
 /**
  * JavaFX App
  */
@@ -48,7 +50,7 @@ public class App extends Application {
     
     final short TEXT_SIZE = 24;
     Text textScore;
-     byte naveSpeedEnemiga = 10;
+     byte naveSpeedEnemiga = 1;
     @Override
     public void start(Stage stage) {
         //pantalla
@@ -67,9 +69,14 @@ public class App extends Application {
         Image fondo = new Image(getClass().getResourceAsStream("/imagenes/fondo.jpg"));
         ImageView imageViewFondo = new ImageView(fondo);
         root.getChildren().add(imageViewFondo);
-       
+
         
-        //nave x y L A
+         //sonido de fondo
+////        final URL resource = getClass().getResource("resource/sonidoFondo.mp3");
+////        Media media = new Media (resource.toString());
+////        MediaPlayer MediaPlayer = new MediaPlayer(media);
+////        MediaPlayer.play();
+////        
         
         //tomar posicion inicial del grupo
         Rectangle naveBase = new Rectangle(0,0,25,7);
@@ -183,24 +190,37 @@ public class App extends Application {
                         balaPosX =  (short) (navePosX + 13);
                         balaPosY = navePosY ;
                         break;
-                        // hacer q en el momento del disparo la bala tenga la posicion de la nave
+                    case R:
+                    this.reinicio();
                 }
-                
+
             }
+
+            private void reinicio() {
+                navePosX = (short)((SCENE_WIDTH)/2);
+        navePosY=420; 
+        naveDirection = 0;
+
+        naveEnemigaPosX =0;
+        naveEnemigaPosY=55; 
+        // cuando se recinicie el juego se le añadira mayor dificultad
+        naveDirectionEnemiga = (short) (naveDirectionEnemiga +1);
+
+        balaPosX = -10;
+        balaPosY= -10; 
+        balaDirectionY = 0;       
+
+        vidasEnemigo = 30;       
+        vidasNave = 1;
+            }
+            
         });
         //para que lo sume de uno en uno y no seguido
         scene.setOnKeyReleased((KeyEvent keyEvent) -> {
         naveDirection = 0;
 //        balaDirectionY = 0;
         });
-        
-        
-         // Texto para la puntuación
-//        tiempo = new Text("0");
-//        tiempo.setFont(Font.font(TEXT_SIZE));
-//        tiempo.setFill(Color.WHITE);
-//        textTitlePerdidoR.getChildren().add(tiempo);
-         // tiempo para iniciar otra partida
+
      TimerTask timerTask = new TimerTask()
      {
          public void run() 
@@ -292,15 +312,6 @@ public class App extends Application {
                     if(colisionVacia == false ){
                     vidasEnemigo = (short) (vidasEnemigo -1);
                     }
-                    
-                    // hacer que tenga mas velocidad al tener menor vida
-//                    
-//                    if(vidasEnemigo <= 20){
-//                        naveSpeedEnemiga = (byte) (naveSpeedEnemiga + 0);
-//                    }
-//                    if(vidasEnemigo >= 20){
-//                        naveSpeedEnemiga = (byte) (naveSpeedEnemiga + 1);
-//                    }
                    
                 // la animacion se para por que has ganado la partida
                     if(vidasEnemigo == 0){
@@ -334,7 +345,22 @@ public class App extends Application {
         timeline.play(); 
         
     }   
+      public void reinicio (){
+        navePosX = (short)((SCENE_WIDTH)/2);
+        navePosY=420; 
+        naveDirection = 0;
 
+        naveEnemigaPosX =0;
+        naveEnemigaPosY=55; 
+        naveDirectionEnemiga = 1;
+
+        balaPosX = -10;
+        balaPosY= -10; 
+        balaDirectionY = 0;       
+
+        vidasEnemigo = 30;       
+        vidasNave = 1;
+    }
     public static void main(String[] args) {
         launch();
     }
